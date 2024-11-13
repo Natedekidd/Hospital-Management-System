@@ -1,0 +1,164 @@
+use new_hope_hospital;
+
+
+CREATE TABLE Patient (
+                         patientID INT PRIMARY KEY AUTO_INCREMENT,
+                         firstName VARCHAR(50),
+                         lastName VARCHAR(50),
+                         username VARCHAR(50) UNIQUE NOT NULL,
+                         password VARCHAR(50) NOT NULL,
+                         dateofBirth DATE,
+                         gender VARCHAR(10),
+                         contactNumber VARCHAR(15),
+                         address VARCHAR(100),
+                         email VARCHAR(100) UNIQUE,
+                         emergencyContact VARCHAR(15),
+                         bloodType VARCHAR(5),
+                         insuranceDetails VARCHAR(70)
+);
+
+
+
+
+CREATE TABLE Doctor (
+                        doctorID INT PRIMARY KEY AUTO_INCREMENT,
+                        firstName VARCHAR(50),
+                        lastName VARCHAR(50),
+                        specialization VARCHAR(100),
+                        contactNumber VARCHAR(15),
+                        email VARCHAR(100),
+                        username VARCHAR(50) UNIQUE NOT NULL,
+                        password VARCHAR(100) NOT NULL,
+                        departmentID INT,
+                        FOREIGN KEY (departmentID) REFERENCES Department(departmentID)
+);
+
+select * from Doctor;
+
+
+
+CREATE TABLE Appointment (
+                             appointmentID INT PRIMARY KEY auto_increment,
+                             patientID INT,
+                             doctorID INT,
+                             appointmentDate DATE,
+                             appointmentTime TIME,
+                             status VARCHAR(50),
+                             FOREIGN KEY (patientID) REFERENCES Patient(patientID),
+                             FOREIGN KEY (doctorID) REFERENCES Doctor(doctorID)
+);
+
+select * from Appointment;
+
+CREATE TABLE MedicalRecord (
+                               recordID INT PRIMARY KEY AUTO_INCREMENT,
+                               patientID INT,
+                               diagnosis VARCHAR(300),
+                               treatment VARCHAR(300),
+                               doctorID INT,
+                               dateOfRecord DATETIME,
+                               FOREIGN KEY (patientID) REFERENCES Patient(patientID),
+                               FOREIGN KEY (doctorID) REFERENCES Doctor(doctorID)
+);
+
+CREATE TABLE Prescription (
+                              prescriptionID INT PRIMARY KEY AUTO_INCREMENT,
+                              patientID INT,
+                              doctorID INT,
+                              medication VARCHAR(255),
+                              dosage VARCHAR(50),
+                              frequency VARCHAR(50),
+                              startDate DATE,
+                              endDate DATE,
+                              FOREIGN KEY (patientID) REFERENCES Patient(patientID),
+                              FOREIGN KEY (doctorID) REFERENCES Doctor(doctorID)
+);
+
+CREATE TABLE Department (
+                            departmentID INT PRIMARY KEY AUTO_INCREMENT,
+                            departmentName VARCHAR(100),
+                            location VARCHAR(150),
+                            headOfDepartment VARCHAR(100)
+);
+
+
+CREATE TABLE Staff (
+                       staffID INT PRIMARY KEY AUTO_INCREMENT,
+                       firstName VARCHAR(50),
+                       lastName VARCHAR(50),
+                       role VARCHAR(50),
+                       contactNumber VARCHAR(15),
+                       email VARCHAR(100),
+                       departmentID INT,
+                       FOREIGN KEY (departmentID) REFERENCES Department(departmentID)
+);
+
+CREATE TABLE Room (
+                      roomID INT PRIMARY KEY AUTO_INCREMENT,
+                      roomNumber VARCHAR(50),
+                      type VARCHAR(50),
+                      availabilityStatus VARCHAR(50),
+                      patientID INT,
+                      FOREIGN KEY (patientID) REFERENCES Patient(patientID)
+);
+
+select *from Room;
+
+INSERT INTO Room (roomNumber, type, availabilityStatus, patientID) VALUES
+                                                                       ('101', 'General', 'Available', NULL),
+                                                                       ('102', 'Semi-Private', 'Available', 2),
+                                                                       ('103', 'Private', 'Occupied', 1),
+                                                                       ('104', 'General', 'Available', NULL),
+                                                                       ('105', 'Semi-Private', 'Available', NULL);
+
+
+CREATE TABLE Billing (
+                         billingID INT PRIMARY KEY AUTO_INCREMENT,
+                         patientID INT,
+                         amount DOUBLE,
+                         billingDate DATE,
+                         paymentStatus VARCHAR(50),
+                         paymentMethod VARCHAR(50),
+                         creditCardNumber VARCHAR(16),
+                         cardholderName VARCHAR(100),
+                         creditCardExpiryDate DATE,
+                         chequeNumber VARCHAR(50),
+                         bankName VARCHAR(100),
+                         FOREIGN KEY (patientID) REFERENCES Patient(patientID)
+);
+
+select * from Billing;
+
+CREATE TABLE Treatment (
+                           treatmentID INT PRIMARY KEY AUTO_INCREMENT,
+                           patientID INT,
+                           doctorID INT,
+                           treatmentDetails VARCHAR(255),
+                           treatmentDate DATETIME,
+                           FOREIGN KEY (patientID) REFERENCES Patient(patientID),
+                           FOREIGN KEY (doctorID) REFERENCES Doctor(doctorID)
+);
+
+
+
+CREATE TABLE Admin (
+                       adminID INT AUTO_INCREMENT PRIMARY KEY,
+                       firstName VARCHAR(50) NOT NULL,
+                       lastName VARCHAR(50) NOT NULL,
+                       username VARCHAR(50) NOT NULL UNIQUE,
+                       password VARCHAR(255) NOT NULL,
+                       email VARCHAR(100) NOT NULL,
+                       contactNumber VARCHAR(15),
+                       role VARCHAR(50) DEFAULT 'Admin',
+                       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE Admin_credentials (
+                                   username VARCHAR(50) NOT NULL PRIMARY KEY,
+                                   password VARCHAR(255) NOT NULL
+);
+
+INSERT INTO Admin_credentials (username, password)
+VALUES ('admin', 'password123');
+
